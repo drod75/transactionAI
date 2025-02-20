@@ -1,5 +1,7 @@
-<div style="align-items: center;">
-  <h1>CISC3142 Web Project</h1>
+<div align="center">  
+  <p align='center'>
+    <a href=''><h1>CISC3142 Web Project</h1></a>
+  </p>
 </div>
 
 
