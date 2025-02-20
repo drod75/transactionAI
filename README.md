@@ -4,6 +4,7 @@
   </p>
 </div>
 
+<br><br>
 
 ## What is it?
 A project made for **CISC 3142** Web Applications at **Brooklyn College** in Spring 2025, the idea is to create a web application that allows users to track their spending and be 
