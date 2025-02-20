@@ -1,4 +1,4 @@
-<div style="justify-content: center">
+<div style="align-items: center;">
   <h1>CISC3142 Web Project</h1>
 </div>
 
