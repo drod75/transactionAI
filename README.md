@@ -7,11 +7,15 @@
 <br><br>
 
 ## What is it?
-A project made for **CISC 3142** Web Applications at **Brooklyn College** in Spring 2025, the idea is to create a web application that allows users to track their spending and be 
-presented with graphs and other features to analyze their spending and average costs.
+Our project for Computer Science 3142 Design and Implementation of Large Scale Applications aims to create a finance tracker that aims to help users keep track of their finances and present them with advanced graphs for their every day use and analysis.
 
 ## Who are we?
-TBD
+Our team consists of:
+- David Rodriguez, [Portfolio](https://drod75.github.io/)
+- Lin Zheng
+- Kedar
+- Celso Gonzalez
+- Andy Chen
 
 ## What will we use?
 TBD
