@@ -13,7 +13,7 @@ Our project for Computer Science 3142 Design and Implementation of Large Scale A
 Our team consists of:
 - David Rodriguez, [Portfolio](https://drod75.github.io/)
 - Lin Zheng
-- Kedar
+- Kedar Chinnery
 - Celso Gonzalez
 - Andy Chen
 
