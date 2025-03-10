@@ -47,9 +47,9 @@ class TransactionForm(FlaskForm):
         transaction_cash_or_credit (SelectField): Cash or Credit of transaction
     '''
     
-    transaction_date = DateField('Transaction Date', validators=[DataRequired()])
-    transaction_total = DecimalField('Transaction Total', validators=[DataRequired()])
-    transaction_category = SelectField(
+    transactionDate = DateField('Transaction Date', validators=[DataRequired()])
+    transactionTotal = DecimalField('Transaction Total', validators=[DataRequired()])
+    transaction_Category = SelectField(
         "Catrgory",
         [DataRequired()],
         choices=[
@@ -64,9 +64,9 @@ class TransactionForm(FlaskForm):
             ("Other", "Other")
         ],
     )
-    transaction_items = IntegerField('Number of Items', validators=[DataRequired()])
-    transaction_taxes = DecimalField('Taxes', validators=[DataRequired()])
-    transaction_cash_or_credit = SelectField(
+    transactionItems = IntegerField('Number of Items', validators=[DataRequired()])
+    transactionTaxes = DecimalField('Taxes', validators=[DataRequired()])
+    transactionPayment = SelectField(
         "Cash or Credit",
         [DataRequired()],
         choices=[
