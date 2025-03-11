@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, session, url_for, redirect, jsonify, flash
 from dotenv import load_dotenv
 from forms import LoginForm, RegisterForm, TransactionForm
 from datetime import datetime
@@ -8,13 +8,10 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.secret_key = os.getenv("SECRET_KEY")
 DATABASE = 'finance_project.db'
 
-@app.route('/')
-@app.route('/home')
-def home():
-    pass
 
 def init_db():
     conn = sqlite3.connect(DATABASE)
@@ -31,13 +28,13 @@ def init_db():
     c.execute('''
         CREATE TABLE IF NOT EXISTS transactions (
             transactionID INTEGER PRIMARY KEY AUTOINCREMENT,
-            FOREIGN KEY (username) REFERENCES users (username),
             transactionDate TEXT NOT NULL,
             transactionTotal DECIMAL NOT NULL,
             transactionItems INTEGER NOT NULL,
             transactionTaxes DECIMAL NOT NULL,
             transactionsCategory TEXT NOT NULL,
             transactionPayment TEXT NOT NULL,
+            FOREIGN KEY (transactionId) REFERENCES users (userId)
         )
     ''')
     conn.commit()
@@ -49,20 +46,20 @@ init_db()
 @app.route('/home')
 def home():
     if 'username' in session:
-        user_id = session['user_id']
+        userId = session['userId']
         username = session['username']
         
         #show total transactions made up to date
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        c.execute("SELECT COUNT(*) FROM transactions WHERE username = ?", (username,))
+        c.execute("SELECT COUNT(*) FROM transactions WHERE transactionID = ?", (userId,))
         total_transactions = c.fetchone()[0]
         conn.close()
         
         #show all transactions
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        c.execute("SELECT * FROM transactions WHERE username = ?", (username,))
+        c.execute("SELECT * FROM transactions WHERE transactionID = ?", (userId,))
         all_transactions = c.fetchall()
         conn.close()
         
@@ -70,35 +67,48 @@ def home():
         
     return redirect(url_for('login'))
 
+@app.route('/faq')
+def faq():
+    if 'username' in session:
+        return render_template('faq.html')
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/logout')
+def logout():
+    session.pop('userId', None)
+    session.pop('username', None)
+    return redirect(url_for('login'))    
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
     form = LoginForm()
-    if form.is_submitted():
-        flash("Form successfully submitted")
     if form.validate_on_submit():
+        flash("Form successfully submitted", "success")
+        print("Form successfully submitted")
         username = form.username.data
         password = form.password.data
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        c.execute("SELECT id, username FROM users WHERE username = ? AND password = ?", (username, password))
+        c.execute("SELECT userId, username FROM users WHERE username = ? AND password = ?", (username, password))
         user = c.fetchone()
         conn.close()
         if user:
-            session['user_id'] = user[0]  # Store user_id in session
+            session['userId'] = user[0]  # Store userId in session
             session['username'] = user[1]  # Store username in session
             return redirect(url_for('home'))
         else:
             flash('Invalid username or password. Please try again.', 'error')
+            print('Invalid username or password. Please try again.')
         
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
     form = RegisterForm()
-    if form.is_submitted():
-        flash("Form successfully submitted")
     if form.validate_on_submit():
+        flash("Form successfully submitted", "success")
+        print("Form successfully submitted")
         name = form.name.data
         username = form.username.data
         email = form.email.data
@@ -109,23 +119,25 @@ def register():
         existing_user = c.fetchone()
         if existing_user:
             flash('Username already exists. Please choose a different one.', 'error')
+            print('Username already exists. Please choose a different one.')
         else:
-            c.execute("INSERT INTO users (username, email, phone, password) VALUES (?, ?, ?, ?)",
-                      (username, email, name, password))
+            c.execute("INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)",
+                                  (name, username, email, password))
             conn.commit()
             conn.close()
             flash('Registration successful! Please log in.', 'success')
-            return redirect(url_for('login')
-    return render_template('register.html')
+            print('Registration successful! Please log in.')
+            return redirect(url_for('login'))
+    return render_template('register.html', form=form)
 
 @app.route('/transaction_log', methods=["GET", "POST"])
 def transaction_log():
     if 'username' in session:
         form = TransactionForm()
-        if form.is_submitted():
-            flash("Form successfully submitted")
         if form.validate_on_submit():
-            username = session['username']
+            flash("Form successfully submitted", "success")
+            print("Form successfully submitted")
+            userId = session['userId']
             transactionDate = form.transactionDate.data
             transactionTotal = form.transactionTotal.data
             transactionItems = form.transactionItems.data
@@ -134,22 +146,22 @@ def transaction_log():
             transactionPayment = form.transactionPayment.data
             conn = sqlite3.connect(DATABASE)
             c = conn.cursor()
-            c.execute("INSERT INTO transactions (username, transactionDate, transactionTotal, transactionItems, transactionTaxes, transactionCategory, transactionPayment) VALUES (?, ?, ?, ?, ?, ?)",
-                      (username, transactionDate, transactionTotal, transactionItems, transactionTaxes, transactionCategory, transactionPayment))
+            c.execute("INSERT INTO transactions (transactionId, transactionDate, transactionTotal, transactionItems, transactionTaxes, transactionCategory, transactionPayment) VALUES (?, ?, ?, ?, ?, ?)",
+                      (userId, transactionDate, transactionTotal, transactionItems, transactionTaxes, transactionCategory, transactionPayment))
             conn.commit()
             conn.close()
             flash('Transaction logged successfully!', 'success')
-        redirect(url_for('home'))
+        redirect(url_for('transaction_log'))
     else:
         return redirect(url_for('login'))
     
 @app.route('/transaction_graphing', methods=["GET", "POST"])
 def transaction_graphing():
     if 'username' in session:
-        username = session['username']
+        userId = session['userId']
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        c.execute("SELECT transactionDate, transactionItems, transactionTaxes, transactionsCategory,transactionPayment FROM transactions WHERE username = ?", (username,))
+        c.execute("SELECT transactionDate, transactionItems, transactionTaxes, transactionsCategory,transactionPayment FROM transactions WHERE transactionId = ?", (userId,))
         user_transactions = c.fetchall()
         conn.commit()
         conn.close()

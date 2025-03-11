@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>FinanceProject: {% block title %}{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/graphing.css') }}">
+
+</head>
+
+<body>
+    <!-- Nav Bar -->
+    <!-- component -->
+    <nav>
+        <div>
+            <!-- 'company' logo -->
+            <a href="#" class="">
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo">
+            </a>
+
+            <!-- pages -->
+            <a href="{{ url_for('home') }}" class="">Home</a>
+
+            <a href="{{ url_for('transaction_graphing') }}" class="">TransactionGraph</a>
+
+            <a href="" class="">AI-Suggestions</a>
+
+            <a href="{{ url_for('faq') }}" class="">FAQ</a>
+
+            <!-- logout svg -->
+            <a href="#" class="">
+                <img src="{{ url_for('static', filename='images/logout.svg') }}" alt="Logout">
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+
+</html>

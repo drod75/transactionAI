@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Finance Project: Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_styling.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+
+<body>
+    <div class="lr-intro">
+        <h1>Finance Project</h1>
+        <p></p>
+    </div>
+
+    <main class="lr-main">
+        <div class="lr-form">
+            <h1 class="lr-form-title">Register</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="lr-{{category}}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form class="lr-form-form" action="{{ url_for('register') }}" method="post">
+                {{ form.csrf_token }}
+                <div class="lr-question">
+                    {{ form.name.label }}
+                    {{ form.name(size=20) }}
+                </div>
+
+                <div class="lr-question">
+                    {{ form.email.label }}
+                    {{ form.email(size=20) }}
+                </div>
+
+                <div class="lr-question">
+                    {{ form.username.label }}
+                    {{ form.username(size=20) }}
+                </div>
+
+                <div class="lr-question">
+                    {{ form.password.label }}
+                    {{ form.password(size=20) }}
+                </div>
+
+                <input class="lr-button" type="submit" value="Go">
+            </form>
+        </div>
+        <div class="lr-question">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+        </div>
+    </main>
+</body>
+
+</html>
