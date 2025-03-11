@@ -1,6 +1,15 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, DecimalField, SelectField, BooleanField, DateField
 from wtforms.validators import DataRequired, Email
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+# os.environ["RECAPTCHA_PUBLIC_KEY"] = os.getenv("RECAPTCHA_PUBLIC_KEY")
+# os.environ["RECAPTCHA_PRIVATE_KEY"] = os.getenv("RECAPTCHA_PRIVATE_KEY")
+
+# parameters = {"RECAPTCHA_PUBLIC_KEY": os.getenv("RECAPTCHA_PUBLIC_KEY"), "RECAPTCHA_PRIVATE_KEY": os.getenv("RECAPTCHA_PRIVATE_KEY")}
 
 class RegisterForm(FlaskForm):
     '''
@@ -14,7 +23,7 @@ class RegisterForm(FlaskForm):
         submit (SubmitField): Submit button
     '''
     name = StringField('Name', validators=[DataRequired()])
-    email = StringField('Email', [Email(message="Not a valid email address.")], validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Register')
@@ -31,7 +40,7 @@ class LoginForm(FlaskForm):
     '''
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    recaptcha = RecaptchaField()
+    # recaptcha = RecaptchaField(parameters)
     submit = SubmitField('Login')
     
 class TransactionForm(FlaskForm):
