@@ -1,18 +1,142 @@
-
 .montserrat {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-  }
-
-* {
-    font-family: "Montserrat", sans-serif;
-    margin: 0;
-    padding: 0;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: "Montserrat", sans-serif;
-    font-weight: bold;
+* {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  min-height: 100%;
+}
+body {
+  height: 100%;
+  min-height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+}
+
+.error {
+  margin: 10px;
+  font: 1em;
+  border: 2px;
+  border-radius: 10px;
+  padding: 5px;
+  border-style: solid;
+  border-color: red;
+  background-color: lightcoral;
+  color: white;
+  width: fit-content;
+}
+
+.success {
+  margin: 10px;
+  font: 1em;
+  border: 2px;
+  border-radius: 10px;
+  padding: 5px;
+  border-style: solid;
+  border-color: green;
+  background-color: lightgreen;
+  color: white;
+  width: fit-content;
+}
+
+.nav_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 10%;
+  font-size: 1em;
+  font-weight: bold;
+  background-color: lightgreen;
+}
+
+.logo {
+  cursor: pointer;
+}
+
+.nav_links {
+  list-style: none;
+}
+
+.nav_links li {
+  display: inline-block;
+  padding: 0px 20px;
+  text-decoration: none;
+}
+
+.nav_links li a {
+  transition: all 0.3s ease 0s;
+  text-decoration: none;
+}
+
+.nav_links li a:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.logout_button {
+  padding: 9px 25px;
+  background-color: rgb(207, 207, 207, 1);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+  text-decoration: none;
+  font-size: 1em;
+}
+
+.logout_button:hover {
+  background-color: rgba(240, 240, 240, 0.8);
+  text-decoration: none;
+}
+
+.main-content {
+  padding: 25px;
+  height: 100%;
+}
+
+.page-title {
+  margin: 0;
+  padding: 0;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.page-description {
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+  width: 75%;
+  align-self: center;
+  text-align: center;
+}
+
+.page-wow {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background-color: lightgreen;
+  opacity: 0.65;
+  border-radius: 20px;
+  margin: 15px auto;
+  width: 75%;
 }

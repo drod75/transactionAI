@@ -13,36 +13,32 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/graphing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/transaction_logging.css') }}">
 
 </head>
 
 <body>
-    <!-- Nav Bar -->
-    <!-- component -->
-    <nav>
-        <div>
-            <!-- 'company' logo -->
-            <a href="#" class="">
-                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo">
-            </a>
-
-            <!-- pages -->
-            <a href="{{ url_for('home') }}" class="">Home</a>
-
-            <a href="{{ url_for('transaction_graphing') }}" class="">TransactionGraph</a>
-
-            <a href="" class="">AI-Suggestions</a>
-
-            <a href="{{ url_for('faq') }}" class="">FAQ</a>
-
-            <!-- logout svg -->
-            <a href="#" class="">
-                <img src="{{ url_for('static', filename='images/logout.svg') }}" alt="Logout">
-            </a>
-        </div>
-    </nav>
-
-    <main>
+    <header class="nav_header">
+        <img class="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        <nav>
+            <ul class="nav_links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('transaction_log') }}">Transaction Logging</a></li>
+                <li><a href="{{ url_for('transaction_graphing') }}">Transaction Graphing</a></li>
+                <li><a href="">AI-Ask</a></li>
+                <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+            </ul>
+        </nav>
+        <a class="cta" href="{{ url_for('logout') }}"><button class="logout_button">Logout</button></a>
+    </header>
+    <main class="main-content" style="background-image: url('{{ url_for('static', filename='images/main-page.svg') }}');">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="{{category}}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
         {% block content %}{% endblock %}
     </main>
 </body>

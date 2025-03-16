@@ -2,6 +2,59 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <h1>Home</h1>
-    <p>This is the home page.</p>
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    } 
+</script>
+
+<div class="page-wow">
+    <h1 class="page-title">Home</h1>
+    <p class="page-description">This is the home page.</p>
+</div>
+
+<!-- welcome message -->
+<p class="welcome">Welcome {{username}}, you have at this moment {{total_transactions}} transactions!</p>
+
+<!-- display transactions -->
+{% if all_transactions %}
+<h2 class="transaction_header">Transactions</h2>
+<table class="transaction_table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Items</th>
+            <th>Taxes</th>
+            <th>Category</th>
+            <th>Payment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in all_transactions %}
+        <tr>
+            <td>{{ transaction[1] }}</td>
+            <td>{{ transaction[2] }}</td>
+            <td>{{ transaction[3] }}</td>
+            <td>{{ transaction[4] }}</td>
+            <td>{{ transaction[5] }}</td>
+            <td>{{ transaction[6] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="no-transactions">No transactions found.</p>
+{% endif %}
 {% endblock %}

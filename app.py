@@ -32,7 +32,7 @@ def init_db():
             transactionTotal DECIMAL NOT NULL,
             transactionItems INTEGER NOT NULL,
             transactionTaxes DECIMAL NOT NULL,
-            transactionsCategory TEXT NOT NULL,
+            transactionCategory TEXT NOT NULL,
             transactionPayment TEXT NOT NULL,
             FOREIGN KEY (transactionId) REFERENCES users (userId)
         )
@@ -127,13 +127,14 @@ def register():
             conn.close()
             flash('Registration successful! Please log in.', 'success')
             print('Registration successful! Please log in.')
-            return redirect(url_for('login'))
+            redirect(url_for('login'))
     return render_template('register.html', form=form)
 
 @app.route('/transaction_log', methods=["GET", "POST"])
 def transaction_log():
     if 'username' in session:
         form = TransactionForm()
+        print('form created', '\n\n\n')
         if form.validate_on_submit():
             flash("Form successfully submitted", "success")
             print("Form successfully submitted")
@@ -146,12 +147,13 @@ def transaction_log():
             transactionPayment = form.transactionPayment.data
             conn = sqlite3.connect(DATABASE)
             c = conn.cursor()
-            c.execute("INSERT INTO transactions (transactionId, transactionDate, transactionTotal, transactionItems, transactionTaxes, transactionCategory, transactionPayment) VALUES (?, ?, ?, ?, ?, ?)",
-                      (userId, transactionDate, transactionTotal, transactionItems, transactionTaxes, transactionCategory, transactionPayment))
+            c.execute("INSERT INTO transactions (transactionId, transactionDate, transactionTotal, transactionItems, transactionTaxes, transactionCategory, transactionPayment) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                      (userId, transactionDate, float(transactionTotal), transactionItems, float(transactionTaxes), transactionCategory, transactionPayment))
             conn.commit()
             conn.close()
             flash('Transaction logged successfully!', 'success')
-        redirect(url_for('transaction_log'))
+            return redirect(url_for('home'))
+        return render_template('transaction_log.html', form=form)
     else:
         return redirect(url_for('login'))
     
