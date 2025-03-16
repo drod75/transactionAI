@@ -1,0 +1,79 @@
+.welcome {
+  padding: 15px;
+  margin: 15px auto;
+  text-align: center;
+  background-color: lightgray;
+  opacity: 0.65;
+  border-radius: 20px;
+  width: fit-content;
+  font-size: 1em;
+}
+
+.no-transactions {
+  font-size: 2.5em;
+  padding: 15px;
+  margin: 15px auto;
+  text-align: center;
+  color: red;
+  background-color: lightpink;
+  border-radius: 20px;
+  width: fit-content;
+  opacity: 0.65;
+}
+
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active,
+.collapsible:hover {
+  background-color: #ccc;
+}
+
+.collapsible-content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+
+.transaction_header {
+  text-align: center;
+  margin: 15px;
+}
+
+.transaction_table {
+  border-collapse: collapse;
+  width: 90%;
+  margin: auto;
+  font-size: 2.45vw;
+}
+
+.transaction_table td {
+  padding: 15px;
+}
+
+.transaction_table thead th {
+  background-color: #54585d;
+  color: #ffffff;
+  font-weight: bold;
+  border: 1px solid #54585d;
+}
+
+.transaction_table tbody td {
+  color: #636363;
+  border: 1px solid #dddfe1;
+  text-align: center;
+}
+
+.transaction_table tbody tr {
+  background-color: #f9fafb;
+}

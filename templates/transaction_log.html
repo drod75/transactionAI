@@ -1,0 +1,51 @@
+{% extends "index.html" %}{% block title %}FAQ{% endblock %}
+{% block content %}
+<div class="page-wow">
+    <h1 class="page-title">Transaction Logging</h1>
+    <p class="page-description">This is the page where you will log your transactions!</p>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="{{category}}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<div class="transaction-form">
+    <form action="{{ url_for('transaction_log') }}" method="post">
+        {{ form.csrf_token }}
+        <div>
+            {{ form.transactionDate.label }}
+            {{ form.transactionDate(size=20) }}
+        </div>
+
+        <div>
+            {{ form.transactionTotal.label }}
+            {{ form.transactionTotal(size=20) }}
+        </div>
+
+        <div>
+            {{ form.transactionCategory.label }}
+            {{ form.transactionCategory() }}
+        </div>
+
+        <div>
+            {{ form.transactionItems.label }}
+            {{ form.transactionItems(size=20) }}
+        </div>
+
+        <div>
+            {{ form.transactionTaxes.label }}
+            {{ form.transactionTaxes(size=20) }}
+        </div>
+
+        <div>
+            {{ form.transactionPayment.label }}
+            {{ form.transactionPayment() }}
+        </div>
+
+        <input class="transaction-submit" type="submit" value="Go">
+    </form>
+</div>
+{% endblock %}

@@ -15,16 +15,18 @@
 <body>
   <div class="lr-intro">
     <h1>Finance Project</h1>
-    <p></p>
+    <p>
+      Welcome to our CISC-3140 Project, take a look around and tell us your thoughts!
+    </p>
   </div>
 
-  <main class="lr-main">
+  <main class="lr-main"  style="background-image: url({{ url_for('static', filename='images/main-page.svg') }}); background-size: auto%">
     <div class="lr-form">
       <h1 class="lr-form-title">Login</h1>
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       {% for category, message in messages %}
-      <div class="lr-{{category}}">{{ message }}</div>
+      <div class="{{category}}">{{ message }}</div>
       {% endfor %}
       {% endif %}
       {% endwith %}

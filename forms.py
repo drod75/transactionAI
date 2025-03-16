@@ -58,8 +58,8 @@ class TransactionForm(FlaskForm):
     
     transactionDate = DateField('Transaction Date', validators=[DataRequired()])
     transactionTotal = DecimalField('Transaction Total', validators=[DataRequired()])
-    transaction_Category = SelectField(
-        "Catrgory",
+    transactionCategory = SelectField(
+        "Category",
         [DataRequired()],
         choices=[
             ("Food", "Food"),
@@ -83,3 +83,4 @@ class TransactionForm(FlaskForm):
             ("Credit", "Credit")
         ],
     )
+    submit = SubmitField('Log Transaction')
