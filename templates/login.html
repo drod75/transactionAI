@@ -9,38 +9,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/login_styling.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-  <title>Finance Project: Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/transaction_logging.css') }}">
+  <title>TransactionAI: Login</title>
 </head>
 
 <body>
-  <div class="lr-intro">
-    <h1>Finance Project</h1>
-    <p>
-      Welcome to our CISC-3140 Project, take a look around and tell us your thoughts!
+  <div class="page-wow">
+    <h1 class="page-title">TransactionAI</h1>
+    <p class="page-description">
+      Welcome to our CISC-3140 Project, please login to access our services!
     </p>
   </div>
 
-  <main class="lr-main"  style="background-image: url({{ url_for('static', filename='images/main-page.svg') }}); background-size: auto%">
-    <div class="lr-form">
-      <h1 class="lr-form-title">Login</h1>
-      {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      {% for category, message in messages %}
-      <div class="{{category}}">{{ message }}</div>
-      {% endfor %}
-      {% endif %}
-      {% endwith %}
-      <form class="lr-form-form" action="{{ url_for('login') }}" method="post">
+  <main class="lr-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="{{category}}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="transaction-form">
+      <h2>Login</h2>
+
+      <form action="{{ url_for('login') }}" method="post">
         {{ form.csrf_token }}
-        <div class="lr-question">
+        <div>
           {{ form.username.label }}
           {{ form.username(size=20) }}
         </div>
-        <div class="lr-question">
+        <div>
           {{ form.password.label }}
           {{ form.password(size=20) }}
         </div>
-        <input class="lr-button" type="submit" value="Go">
+        <input class="transaction-submit" type="submit" value="Go">
       </form>
     </div>
     <div class="lr-question">

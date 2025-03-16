@@ -1,60 +1,83 @@
 {% extends "index.html" %}
 {% block title %}Home{% endblock %}
-
-{% block content %}
-<script>
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
-
-    for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function () {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                content.style.display = "block";
-            }
-        });
-    } 
-</script>
-
+{% block header %}
 <div class="page-wow">
     <h1 class="page-title">Home</h1>
     <p class="page-description">This is the home page.</p>
 </div>
+{% endblock %}
+
+{% block content %}
 
 <!-- welcome message -->
-<p class="welcome">Welcome {{username}}, you have at this moment {{total_transactions}} transactions!</p>
+<div class="headsup">
+    <h3>Welcome to TransactionAI!</h3>
+    {% if total_transactions > 1 %}
+    <p> Hey {{username}}, you have at this moment {{total_transactions}} transactions! </p>
+    {% else %}
+    <p> Hey {{username}}, you have at this moment {{total_transactions}} transaction! </p>
+    {% endif %}
+</div>
 
 <!-- display transactions -->
 {% if all_transactions %}
-<h2 class="transaction_header">Transactions</h2>
-<table class="transaction_table">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Total</th>
-            <th>Items</th>
-            <th>Taxes</th>
-            <th>Category</th>
-            <th>Payment</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for transaction in all_transactions %}
-        <tr>
-            <td>{{ transaction[1] }}</td>
-            <td>{{ transaction[2] }}</td>
-            <td>{{ transaction[3] }}</td>
-            <td>{{ transaction[4] }}</td>
-            <td>{{ transaction[5] }}</td>
-            <td>{{ transaction[6] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-wrapper">
+    <table class="transaction_table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Items</th>
+                <th>Taxes</th>
+                <th>Category</th>
+                <th>Payment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in all_transactions %}
+            <tr>
+                <td>{{ transaction[1] }}</td>
+                <td>{{ transaction[2] }}</td>
+                <td>{{ transaction[3] }}</td>
+                <td>{{ transaction[4] }}</td>
+                <td>{{ transaction[5] }}</td>
+                <td>{{ transaction[6] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% else %}
-<p class="no-transactions">No transactions found.</p>
+<div class="warning">
+    <h3>Warning</h3>
+    <p>You have no transactions at the moment!</p>
+</div>
 {% endif %}
+
+<!-- Display graph form -->
+
+<div class="transaction-form">
+    <h2>Generate Graph</h2>
+    <form method="post" action="{{ url_for('home') }}">
+        {{ graph_form.csrf_token }}
+        <div>
+            {{ graph_form.graphs.label }}
+            {{ graph_form.graphs() }}
+        </div>
+
+        <input class="transaction-submit" type="submit" value="Go">
+    </form>
+</div>
+
+<!-- Display graphs -->
+{% if graphs %}
+<div class="graph-container">
+    <h2>Transaction Graphs</h2>
+    {% for graph in graphs %}
+    {{ graph|safe }}
+    {% endfor %}
+</div>
+
+{% endif %}
+
 {% endblock %}

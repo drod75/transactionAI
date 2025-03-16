@@ -1,14 +1,19 @@
 {% extends "index.html" %}{% block title %}FAQ{% endblock %}
-{% block content %}
+{% block header %}
 <div class="page-wow">
     <h1 class="page-title">Transaction Logging</h1>
-    <p class="page-description">This is the page where you will log your transactions!</p>
+    <p class="page-description">Log your transactions!</p>
 </div>
+{% endblock %}
+{% block content %}
 
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
 {% for category, message in messages %}
-<div class="{{category}}">{{ message }}</div>
+<div class="{{category}}">
+    <h3>{{ category|capitalize }}</h3>
+    <p>{{ message }}</p>
+</div>
 {% endfor %}
 {% endif %}
 {% endwith %}

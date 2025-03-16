@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>FinanceProject: {% block title %}{% endblock %}</title>
+    <title>TransactionAI: {% block title %}{% endblock %}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,33 +14,59 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/graphing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/transaction_logging.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
 
 </head>
 
 <body>
-    <header class="nav_header">
-        <img class="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
-        <nav>
-            <ul class="nav_links">
+    <header class="header">
+        <div class="header-container">
+            <h2 class="logo">TransactionAI</h2>
+            <div class="hamburger">
+                <div class="line line1"></div>
+                <div class="line line2"></div>
+                <div class="line line3"></div>
+            </div>
+            <ul class="menu">
+                <span class="close">&times;</span>
                 <li><a href="{{ url_for('home') }}">Home</a></li>
                 <li><a href="{{ url_for('transaction_log') }}">Transaction Logging</a></li>
-                <li><a href="{{ url_for('transaction_graphing') }}">Transaction Graphing</a></li>
                 <li><a href="">AI-Ask</a></li>
-                <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
             </ul>
-        </nav>
-        <a class="cta" href="{{ url_for('logout') }}"><button class="logout_button">Logout</button></a>
+        </div>
     </header>
-    <main class="main-content" style="background-image: url('{{ url_for('static', filename='images/main-page.svg') }}');">
+
+    {% block header %}{% endblock %}
+
+    <main class="main-content">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="{{category}}">{{ message }}</div>
+        <div class="{{category}}">
+            <h3>{{ category|capitalize }}</h3>
+            <p>{{ message }}</p>
+        </div>
         {% endfor %}
         {% endif %}
         {% endwith %}
         {% block content %}{% endblock %}
     </main>
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const menu = document.querySelector('.menu');
+        const closeBtn = document.querySelector('.close');
+
+        hamburger.addEventListener('click', () => {
+            menu.classList.add('active');
+            hamburger.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+        });
+    </script>
 </body>
 
 </html>

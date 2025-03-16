@@ -1,8 +1,16 @@
-from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, DecimalField, SelectField, BooleanField, DateField
-from wtforms.validators import DataRequired, Email
 from dotenv import load_dotenv
-import os
+from flask_wtf import FlaskForm
+from wtforms import (
+    DateField,
+    DecimalField,
+    IntegerField,
+    PasswordField,
+    SelectField,
+    SelectMultipleField,
+    StringField,
+    SubmitField,
+)
+from wtforms.validators import DataRequired
 
 load_dotenv()
 
@@ -11,42 +19,47 @@ load_dotenv()
 
 # parameters = {"RECAPTCHA_PUBLIC_KEY": os.getenv("RECAPTCHA_PUBLIC_KEY"), "RECAPTCHA_PRIVATE_KEY": os.getenv("RECAPTCHA_PRIVATE_KEY")}
 
+
 class RegisterForm(FlaskForm):
-    '''
+    """
     Form for users to create new account
-    
+
     Attributes:
         name (StringField): Name of user
         email (StringField): Email of user
         username (StringField): Username of user
         password (PasswordField): Password of user
         submit (SubmitField): Submit button
-    '''
-    name = StringField('Name', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired()])
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Register')
-    
+    """
+
+    name = StringField("Name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired()])
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    submit = SubmitField("Register")
+
+
 class LoginForm(FlaskForm):
-    '''
+    """
     Form for users to login
-    
+
     Attributes:
         username (StringField): Username of user
         password (PasswordField): Password of user
         recaptcha (RecaptchaField): Recaptcha field
         submit (SubmitField): Submit button
-    '''
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    """
+
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
     # recaptcha = RecaptchaField(parameters)
-    submit = SubmitField('Login')
-    
+    submit = SubmitField("Login")
+
+
 class TransactionForm(FlaskForm):
-    '''
+    """
     Form for users to log transactions
-    
+
     Attributes:
         transaction_date (DateField): Date of transaction
         transaction_total (DecimalField): Total of transaction
@@ -54,10 +67,10 @@ class TransactionForm(FlaskForm):
         transaction_items (IntegerField): Number of items in transaction
         transaction_taxes (DecimalField): Taxes of transaction
         transaction_cash_or_credit (SelectField): Cash or Credit of transaction
-    '''
-    
-    transactionDate = DateField('Transaction Date', validators=[DataRequired()])
-    transactionTotal = DecimalField('Transaction Total', validators=[DataRequired()])
+    """
+
+    transactionDate = DateField("Transaction Date", validators=[DataRequired()])
+    transactionTotal = DecimalField("Transaction Total", validators=[DataRequired()])
     transactionCategory = SelectField(
         "Category",
         [DataRequired()],
@@ -70,17 +83,28 @@ class TransactionForm(FlaskForm):
             ("Health", "Health"),
             ("Personal", "Personal"),
             ("Gift", "Gift"),
-            ("Other", "Other")
+            ("Other", "Other"),
         ],
     )
-    transactionItems = IntegerField('Number of Items', validators=[DataRequired()])
-    transactionTaxes = DecimalField('Taxes', validators=[DataRequired()])
+    transactionItems = IntegerField("Number of Items", validators=[DataRequired()])
+    transactionTaxes = DecimalField("Taxes", validators=[DataRequired()])
     transactionPayment = SelectField(
         "Cash or Credit",
         [DataRequired()],
+        choices=[("Cash", "Cash"), ("Credit", "Credit")],
+    )
+    submit = SubmitField("Log Transaction")
+
+
+class graphForm(FlaskForm):
+    graphs = SelectMultipleField(
+        "Graphs",
+        [DataRequired()],
         choices=[
-            ("Cash", "Cash"),
-            ("Credit", "Credit")
+            ("Pie Chart", "Pie Chart"),
+            ("Bar Chart", "Bar Chart"),
+            ("Line Chart", "Line Chart"),
+            ("Scatter Plot", "Scatter Plot"),
         ],
     )
-    submit = SubmitField('Log Transaction')
+    submit = SubmitField("Graph Transactions")
