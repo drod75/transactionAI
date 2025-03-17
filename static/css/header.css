@@ -54,6 +54,7 @@
 .menu li {
     margin: 15px 0;
     font-size: 1.2em;
+    transition: all 0.3s ease-in-out;
 }
 
 .menu li:hover {
@@ -64,6 +65,16 @@
     border-radius: 50px;
     transition: all 0.3s ease-in-out;
 }
+
+.menu #logout:hover {
+    background-color: rgb(244, 105, 135);
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 15px 15px;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+}
+
 
 .menu a {
     text-decoration: none;

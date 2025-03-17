@@ -94,17 +94,3 @@ class TransactionForm(FlaskForm):
         choices=[("Cash", "Cash"), ("Credit", "Credit")],
     )
     submit = SubmitField("Log Transaction")
-
-
-class graphForm(FlaskForm):
-    graphs = SelectMultipleField(
-        "Graphs",
-        [DataRequired()],
-        choices=[
-            ("Pie Chart", "Pie Chart"),
-            ("Bar Chart", "Bar Chart"),
-            ("Line Chart", "Line Chart"),
-            ("Scatter Plot", "Scatter Plot"),
-        ],
-    )
-    submit = SubmitField("Graph Transactions")
