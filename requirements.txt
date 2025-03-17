@@ -6,6 +6,7 @@ Flask==3.1.0
 Flask-WTF==1.2.2
 itsdangerous==2.2.0
 Jinja2==3.1.6
+Markdown @ file:///work/perseverance-python-buildout/croot/markdown_1698870813381/work
 MarkupSafe==3.0.2
 mkl-service==2.4.0
 mkl_fft @ file:///io/mkl313/mkl_fft_1730824109137/work
