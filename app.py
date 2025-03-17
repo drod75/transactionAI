@@ -4,7 +4,7 @@ import sqlite3
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, session, url_for
 
-from forms import LoginForm, RegisterForm, TransactionForm, graphForm
+from forms import LoginForm, RegisterForm, TransactionForm
 from graphing import generate_graphs
 
 load_dotenv()
@@ -53,8 +53,6 @@ def home():
         userId = session["userId"]
         username = session["username"]
 
-        graph_html = None
-
         # show total transactions made up to date
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
@@ -71,21 +69,13 @@ def home():
         all_transactions = c.fetchall()
         conn.close()
 
-        form = graphForm()
-
-        if form.validate_on_submit():
-            flash("Form successfully submitted", "success")
-            print("Form successfully submitted")
-
-            charts = form.graphs.data
-            graph_html = generate_graphs(all_transactions, charts)
+        graph_html = generate_graphs(all_transactions)
 
         return render_template(
             "home.html",
             username=username,
             total_transactions=total_transactions,
             all_transactions=all_transactions,
-            graph_form=form,
             graphs=graph_html,
         )
 

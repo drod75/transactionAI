@@ -118,17 +118,19 @@
 
 .graph-container {
   width: 75%;
-  justify-content: center;
+  margin: 0 auto;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  margin: 15px auto;
   background-color: rgb(165,155,196);
   padding: 15px 15px;
   text-align: center;
-}
+  }
 
 .graph-container div {
-  margin: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 100%;
 }
 
 .graph-container h2 {

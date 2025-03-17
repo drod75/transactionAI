@@ -54,21 +54,6 @@
 </div>
 {% endif %}
 
-<!-- Display graph form -->
-
-<div class="transaction-form">
-    <h2>Generate Graph</h2>
-    <form method="post" action="{{ url_for('home') }}">
-        {{ graph_form.csrf_token }}
-        <div>
-            {{ graph_form.graphs.label }}
-            {{ graph_form.graphs() }}
-        </div>
-
-        <input class="transaction-submit" type="submit" value="Go">
-    </form>
-</div>
-
 <!-- Display graphs -->
 {% if graphs %}
 <div class="graph-container">
