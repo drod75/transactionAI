@@ -1,0 +1,20 @@
+.about-content {
+    padding: 15px;
+    line-height: 2em;
+    text-align: left;
+}
+
+.about-content h2 {
+    text-align: center;
+}
+
+.about-content p {
+    text-align: center;
+    width: 75%;
+    margin: 0 auto;
+}
+
+.about-content li {
+    text-align: center; 
+    width: max-content;
+}

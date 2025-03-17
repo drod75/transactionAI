@@ -3,6 +3,7 @@ import sqlite3
 
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, session, url_for
+import markdown
 
 from forms import LoginForm, RegisterForm, TransactionForm
 from graphing import generate_graphs
@@ -85,7 +86,13 @@ def home():
 @app.route("/about")
 def about():
     if "username" in session:
-        return render_template("about.html")
+        try:
+            with open("README.md", "r") as f:
+                markdown_content = f.read()
+            html_content = markdown.markdown(markdown_content)
+            return render_template("about.html", about_content=html_content)
+        except FileNotFoundError:
+            return render_template("about.html", about_content="About page content not found.")
     else:
         return redirect(url_for("login"))
 
