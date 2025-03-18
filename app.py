@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, session, url_for
 import markdown
 from supabase import create_client, Client
-
+from smartAI import create_llm, invoke_llm
 from forms import LoginForm, RegisterForm, TransactionForm
 from graphing import generate_graphs
 
@@ -19,6 +19,8 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# Smart AI setup
+llm = create_llm()
 
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
@@ -34,6 +36,8 @@ def home():
         # Show all transactions
         response = supabase.table("transactions").select("*").eq("userId", userId).execute()
         all_transactions = response.data
+        
+        session['all_transactions'] = all_transactions
 
         # Convert Supabase dict format to format expected by generate_graphs
         formatted_transactions = []
@@ -72,6 +76,7 @@ def about():
 def logout():
     session.pop("userId", None)
     session.pop("username", None)
+    session.pop('all_transactions', None)
     return redirect(url_for("login"))
 
 
@@ -166,7 +171,8 @@ def transaction_log():
 
 @app.route('/smartspending', methods=['GET', 'POST'])
 def smartspending():
-    if "username" in session:
+    if "username" in session: 
+        # ten_points = llm.invoke(census_data, session['all_transactions'])    
         return render_template("smartspending.html")
     else:
         return redirect(url_for("login"))
