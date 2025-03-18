@@ -1,50 +1,23 @@
 import os
-import sqlite3
-
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, session, url_for
 import markdown
+from supabase import create_client, Client
 
 from forms import LoginForm, RegisterForm, TransactionForm
 from graphing import generate_graphs
 
+# Load environment variables first
 load_dotenv()
 
 app = Flask(__name__)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.secret_key = os.getenv("SECRET_KEY")
-DATABASE = "finance_project.db"
 
-
-def init_db():
-    conn = sqlite3.connect(DATABASE)
-    c = conn.cursor()
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            userId INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            username TEXT NOT NULL,
-            email TEXT NOT NULL,
-            password TEXT NOT NULL
-        )
-    """)
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS transactions (
-            transactionId INTEGER PRIMARY KEY AUTOINCREMENT,
-            transactionDate TEXT NOT NULL,
-            transactionTotal DECIMAL NOT NULL,
-            transactionItems INTEGER NOT NULL,
-            transactionTaxes DECIMAL NOT NULL,
-            transactionCategory TEXT NOT NULL,
-            transactionPayment TEXT NOT NULL,
-            FOREIGN KEY (transactionId) REFERENCES users (userId)
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-
-init_db()
+# Supabase setup - moved after load_dotenv()
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 @app.route("/")
@@ -54,23 +27,21 @@ def home():
         userId = session["userId"]
         username = session["username"]
 
-        # show total transactions made up to date
-        conn = sqlite3.connect(DATABASE)
-        c = conn.cursor()
-        c.execute(
-            "SELECT COUNT(*) FROM transactions WHERE transactionId = ?", (userId,)
-        )
-        total_transactions = c.fetchone()[0]
-        conn.close()
+        # Show total transactions made up to date for this user
+        response = supabase.table("transactions").select("*", count="exact").eq("userId", userId).execute()
+        total_transactions = response.count
 
-        # show all transactions
-        conn = sqlite3.connect(DATABASE)
-        c = conn.cursor()
-        c.execute("SELECT * FROM transactions WHERE transactionId = ?", (userId,))
-        all_transactions = c.fetchall()
-        conn.close()
+        # Show all transactions
+        response = supabase.table("transactions").select("*").eq("userId", userId).execute()
+        all_transactions = response.data
 
-        graph_html = generate_graphs(all_transactions)
+        # Convert Supabase dict format to format expected by generate_graphs
+        formatted_transactions = []
+        for transaction in all_transactions:
+            # Adapt this based on your graphing.py implementation
+            formatted_transactions.append(transaction)
+
+        graph_html = generate_graphs(formatted_transactions)
 
         return render_template(
             "home.html",
@@ -109,24 +80,19 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         flash("Form successfully submitted", "success")
-        print("Form successfully submitted")
         username = form.username.data
         password = form.password.data
-        conn = sqlite3.connect(DATABASE)
-        c = conn.cursor()
-        c.execute(
-            "SELECT userId, username FROM users WHERE username = ? AND password = ?",
-            (username, password),
-        )
-        user = c.fetchone()
-        conn.close()
-        if user:
-            session["userId"] = user[0]  # Store userId in session
-            session["username"] = user[1]  # Store username in session
+        
+        # Query Supabase for user credentials
+        response = supabase.table("users").select("userId, username").eq("username", username).eq("password", password).execute()
+        
+        if response.data and len(response.data) > 0:
+            user = response.data[0]
+            session["userId"] = user["userId"]
+            session["username"] = user["username"]
             return redirect(url_for("home"))
         else:
             flash("Invalid username or password. Please try again.", "error")
-            print("Invalid username or password. Please try again.")
 
     return render_template("login.html", form=form)
 
@@ -136,28 +102,29 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         flash("Form successfully submitted", "success")
-        print("Form successfully submitted")
         name = form.name.data
         username = form.username.data
         email = form.email.data
         password = form.password.data
-        conn = sqlite3.connect(DATABASE)
-        c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE username = ?", (username,))
-        existing_user = c.fetchone()
-        if existing_user:
+        
+        # Check if username exists
+        response = supabase.table("users").select("*").eq("username", username).execute()
+        
+        if response.data and len(response.data) > 0:
             flash("Username already exists. Please choose a different one.", "error")
-            print("Username already exists. Please choose a different one.")
         else:
-            c.execute(
-                "INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)",
-                (name, username, email, password),
-            )
-            conn.commit()
-            conn.close()
+            # Insert new user
+            new_user = {
+                "name": name,
+                "username": username,
+                "email": email,
+                "password": password
+            }
+            response = supabase.table("users").insert(new_user).execute()
+            
             flash("Registration successful! Please log in.", "success")
-            print("Registration successful! Please log in.")
-            redirect(url_for("login"))
+            return redirect(url_for("login"))
+    
     return render_template("register.html", form=form)
 
 
@@ -165,35 +132,46 @@ def register():
 def transaction_log():
     if "username" in session:
         form = TransactionForm()
-        print("form created", "\n\n\n")
         if form.validate_on_submit():
             flash("Form successfully submitted", "success")
-            print("Form successfully submitted")
-            transactionId = session["userId"]
+            userId = session["userId"]
+            
             transactionDate = form.transactionDate.data
-            transactionTotal = form.transactionTotal.data
+            if hasattr(transactionDate, 'isoformat'):  # Check if it's a date object
+                transactionDate = transactionDate.isoformat()            
+            
+            transactionSubtotal = float(form.transactionSubtotal.data)
             transactionItems = form.transactionItems.data
-            transactionTaxes = form.transactionTaxes.data
+            transactionTaxes = float(form.transactionTaxes.data)
             transactionCategory = form.transactionCategory.data
             transactionPayment = form.transactionPayment.data
-            conn = sqlite3.connect(DATABASE)
-            c = conn.cursor()
-            c.execute(
-                "INSERT INTO transactions (transactionId, transactionDate, transactionTotal, transactionItems, transactionTaxes, transactionCategory, transactionPayment) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (
-                    transactionId,
-                    transactionDate,
-                    float(transactionTotal),
-                    transactionItems,
-                    float(transactionTaxes),
-                    transactionCategory,
-                    transactionPayment,
-                ),
-            )
-            conn.commit()
-            conn.close()
+
+            new_transaction = {
+                "userId": userId,
+                "transactionDate": transactionDate,
+                "transactionSubtotal": transactionSubtotal,
+                "transactionItems": transactionItems,
+                "transactionTaxes": transactionTaxes,
+                "transactionCategory": transactionCategory,
+                "transactionPayment": transactionPayment
+            }
+            
+            response = supabase.table("transactions").insert(new_transaction).execute()
+
             flash("Transaction logged successfully!", "success")
             return redirect(url_for("home"))
         return render_template("transaction_log.html", form=form)
     else:
         return redirect(url_for("login"))
+
+@app.route('/smartspending', methods=['GET', 'POST'])
+def smartspending():
+    if "username" in session:
+        return render_template("smartspending.html")
+    else:
+        return redirect(url_for("login"))
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

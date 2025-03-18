@@ -36,12 +36,12 @@
         <tbody>
             {% for transaction in all_transactions %}
             <tr>
-                <td>{{ transaction[1] }}</td>
-                <td>{{ transaction[2] }}</td>
-                <td>{{ transaction[3] }}</td>
-                <td>{{ transaction[4] }}</td>
-                <td>{{ transaction[5] }}</td>
-                <td>{{ transaction[6] }}</td>
+                <td>{{ transaction.transactionDate }}</td>
+                <td>{{ transaction.transactionSubtotal }}</td>
+                <td>{{ transaction.transactionItems }}</td>
+                <td>{{ transaction.transactionTaxes }}</td>
+                <td>{{ transaction.transactionCategory }}</td>
+                <td>{{ transaction.transactionPayment }}</td>
             </tr>
             {% endfor %}
         </tbody>

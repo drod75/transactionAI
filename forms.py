@@ -70,7 +70,7 @@ class TransactionForm(FlaskForm):
     """
 
     transactionDate = DateField("Transaction Date", validators=[DataRequired()])
-    transactionTotal = DecimalField("Transaction Total", validators=[DataRequired()])
+    transactionSubtotal = DecimalField("Transaction Subtotal", validators=[DataRequired()])
     transactionCategory = SelectField(
         "Category",
         [DataRequired()],
