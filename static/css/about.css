@@ -2,6 +2,20 @@
     padding: 15px;
     line-height: 2em;
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1em;
+}
+
+.about-content img {
+    width: 20vw;
+}
+
+
+.about-content h1 a {
+    text-decoration: underline;
+    color: navy;
 }
 
 .about-content h2 {
