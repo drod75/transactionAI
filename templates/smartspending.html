@@ -7,4 +7,10 @@
 {% endblock %}
 
 {% block content %}
+    {% for key,value in ten_points.items() %}
+    <div class="recomendation"
+        <h3>{{key}}</h3>
+        <p>{{value}}</p>
+    </div>
+    {% endfor %}
 {% endblock %}
