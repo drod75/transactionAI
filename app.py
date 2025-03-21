@@ -22,6 +22,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 # Smart AI setup
 llm = create_llm()
 
+
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
 def home():
@@ -30,13 +31,15 @@ def home():
         username = session["username"]
 
         # Show total transactions made up to date for this user
-        response = supabase.table("transactions").select("*", count="exact").eq("userId", userId).execute()
+        response = supabase.table("transactions").select(
+            "*", count="exact").eq("userId", userId).execute()
         total_transactions = response.count
 
         # Show all transactions
-        response = supabase.table("transactions").select("*").eq("userId", userId).execute()
+        response = supabase.table("transactions").select(
+            "*").eq("userId", userId).execute()
         all_transactions = response.data
-        
+
         session['all_transactions'] = all_transactions
 
         # Convert Supabase dict format to format expected by generate_graphs
@@ -87,10 +90,11 @@ def login():
         flash("Form successfully submitted", "success")
         username = form.username.data
         password = form.password.data
-        
+
         # Query Supabase for user credentials
-        response = supabase.table("users").select("userId, username").eq("username", username).eq("password", password).execute()
-        
+        response = supabase.table("users").select("userId, username").eq(
+            "username", username).eq("password", password).execute()
+
         if response.data and len(response.data) > 0:
             user = response.data[0]
             session["userId"] = user["userId"]
@@ -111,10 +115,11 @@ def register():
         username = form.username.data
         email = form.email.data
         password = form.password.data
-        
+
         # Check if username exists
-        response = supabase.table("users").select("*").eq("username", username).execute()
-        
+        response = supabase.table("users").select(
+            "*").eq("username", username).execute()
+
         if response.data and len(response.data) > 0:
             flash("Username already exists. Please choose a different one.", "error")
         else:
@@ -126,10 +131,10 @@ def register():
                 "password": password
             }
             response = supabase.table("users").insert(new_user).execute()
-            
+
             flash("Registration successful! Please log in.", "success")
             return redirect(url_for("login"))
-    
+
     return render_template("register.html", form=form)
 
 
@@ -140,11 +145,11 @@ def transaction_log():
         if form.validate_on_submit():
             flash("Form successfully submitted", "success")
             userId = session["userId"]
-            
+
             transactionDate = form.transactionDate.data
             if hasattr(transactionDate, 'isoformat'):  # Check if it's a date object
-                transactionDate = transactionDate.isoformat()            
-            
+                transactionDate = transactionDate.isoformat()
+
             transactionSubtotal = float(form.transactionSubtotal.data)
             transactionItems = form.transactionItems.data
             transactionTaxes = float(form.transactionTaxes.data)
@@ -160,8 +165,9 @@ def transaction_log():
                 "transactionCategory": transactionCategory,
                 "transactionPayment": transactionPayment
             }
-            
-            response = supabase.table("transactions").insert(new_transaction).execute()
+
+            response = supabase.table("transactions").insert(
+                new_transaction).execute()
 
             flash("Transaction logged successfully!", "success")
             return redirect(url_for("home"))
@@ -169,14 +175,14 @@ def transaction_log():
     else:
         return redirect(url_for("login"))
 
+
 @app.route('/smartspending', methods=['GET', 'POST'])
 def smartspending():
-    if "username" in session: 
-        # ten_points = llm.invoke(census_data, session['all_transactions'])    
-        return render_template("smartspending.html")
+    if "username" in session:
+        ten_points = invoke_llm(llm, session['all_transactions'])
+        return render_template("smartspending.html", ten_points=ten_points)
     else:
         return redirect(url_for("login"))
-
 
 
 if __name__ == "__main__":
