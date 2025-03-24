@@ -8,9 +8,12 @@
 
 {% block content %}
     {% for key,value in ten_points.items() %}
-    <div class="recomendation"
-        <h3>{{key}}</h3>
-        <p>{{value}}</p>
+    <div class="points">
+        <div class="recomendation">
+            <h3>{{key.title().replace('_', ' ')}}</h3>
+            <p>{{value}}</p>
+        </div>
     </div>
+
     {% endfor %}
 {% endblock %}

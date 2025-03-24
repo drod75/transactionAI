@@ -1,0 +1,30 @@
+.points {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px auto;
+    padding: 15px;
+    border: 1px solid black;
+    border-radius: 25px;
+    font-size: 1.25em;
+    width: 85%;
+    background-image: url('https://cdn.pixabay.com/photo/2022/01/28/14/58/mountains-6974850_1280.jpg');
+    background-position: bottom;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.recomendation {
+    color: white;
+    width: 85%;
+}
+
+.recomendation h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2.5em;
+}
+
+.recomendation p {
+    margin-bottom: 25px;
+}
