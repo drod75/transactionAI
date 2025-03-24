@@ -19,10 +19,6 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Smart AI setup
-llm = create_llm()
-
-
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
 def home():
@@ -99,6 +95,11 @@ def login():
             user = response.data[0]
             session["userId"] = user["userId"]
             session["username"] = user["username"]
+            
+            # llm 
+            llm = create_llm()
+            session['llm'] = llm
+            
             return redirect(url_for("home"))
         else:
             flash("Invalid username or password. Please try again.", "error")
@@ -179,7 +180,7 @@ def transaction_log():
 @app.route('/smartspending', methods=['GET', 'POST'])
 def smartspending():
     if "username" in session:
-        ten_points = invoke_llm(llm, session['all_transactions'])
+        ten_points = invoke_llm(session['all_transactions'], session['llm'])
         return render_template("smartspending.html", ten_points=ten_points)
     else:
         return redirect(url_for("login"))
