@@ -22,6 +22,11 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
 def home():
+    """
+    Renders the home page if the user is logged in.
+    Fetches the user's transactions and generates graphs.
+    Redirects to login if the user is not authenticated.
+    """
     if "username" in session:
         userId = session["userId"]
         username = session["username"]
@@ -59,6 +64,10 @@ def home():
 
 @app.route("/about")
 def about():
+    """
+    Renders the About page by reading content from README.md.
+    Redirects to login if the user is not authenticated.
+    """
     if "username" in session:
         try:
             with open("README.md", "r") as f:
@@ -73,6 +82,9 @@ def about():
 
 @app.route("/logout")
 def logout():
+    """
+    Logs out the user by clearing session data and redirects to the login page.
+    """
     session.pop("userId", None)
     session.pop("username", None)
     session.pop('all_transactions', None)
@@ -81,6 +93,10 @@ def logout():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    Handles user login.
+    Validates credentials against Supabase and starts a session if successful.
+    """
     form = LoginForm()
     if form.validate_on_submit():
         flash("Form successfully submitted", "success")
@@ -109,6 +125,10 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    Handles user registration.
+    Inserts a new user into the database if the username does not already exist.
+    """
     form = RegisterForm()
     if form.validate_on_submit():
         flash("Form successfully submitted", "success")
@@ -141,6 +161,10 @@ def register():
 
 @app.route("/transaction_log", methods=["GET", "POST"])
 def transaction_log():
+    """
+    Logs a financial transaction for the logged-in user.
+    Stores the transaction data in Supabase and redirects to the home page.
+    """
     if "username" in session:
         form = TransactionForm()
         if form.validate_on_submit():
@@ -179,6 +203,10 @@ def transaction_log():
 
 @app.route('/smartspending', methods=['GET', 'POST'])
 def smartspending():
+    """
+    Generates financial recommendations based on the user's transaction history.
+    Uses an AI model to analyze spending patterns and provide insights.
+    """
     if "username" in session:
         ten_points = invoke_llm(session['all_transactions'], session['llm'])
         return render_template("smartspending.html", ten_points=ten_points)
