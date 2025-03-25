@@ -4,6 +4,21 @@ from datetime import datetime
 import pandas as pd
 
 def generate_graphs(all_transactions):
+    """
+    Generates various interactive graphs to visualize transaction data.
+
+    This function takes a list of transaction data, processes it into a DataFrame, 
+    and then creates several types of visualizations: pie charts, bar charts, 
+    and line charts, grouped by category, payment method, month, and year.
+
+    Args:
+        all_transactions (list): A list of dictionaries, where each dictionary 
+                                  contains details about a transaction.
+
+    Returns:
+        list: A list of Plotly graph HTML div elements containing the generated 
+              charts, or None if no transactions are provided.
+    """
     # Check if there are any transactions
     if not all_transactions:
         return None
