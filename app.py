@@ -23,9 +23,14 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 @app.route("/home", methods=["GET", "POST"])
 def home():
     """
-    Renders the home page if the user is logged in.
-    Fetches the user's transactions and generates graphs.
-    Redirects to login if the user is not authenticated.
+    Renders the home page for logged-in users.
+    
+    - Fetches and displays the user's transaction history.
+    - Generates and embeds graphs based on transaction data.
+    - Redirects to the login page if the user is not authenticated.
+    
+    Returns:
+        Rendered template for the home page if authenticated, otherwise a redirect to login.
     """
     if "username" in session:
         userId = session["userId"]
@@ -66,7 +71,12 @@ def home():
 def about():
     """
     Renders the About page by reading content from README.md.
-    Redirects to login if the user is not authenticated.
+    
+    - Converts Markdown content to HTML.
+    - Redirects to login if the user is not authenticated.
+    
+    Returns:
+        Rendered About page template if authenticated, otherwise a redirect to login.
     """
     if "username" in session:
         try:
@@ -94,8 +104,11 @@ def logout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """
-    Handles user login.
-    Validates credentials against Supabase and starts a session if successful.
+    Handles user authentication.
+    
+    - Validates login credentials against the database.
+    - Initializes a session upon successful login.
+    - Redirects to the home page if authentication succeeds.
     """
     form = LoginForm()
     if form.validate_on_submit():
@@ -127,7 +140,10 @@ def login():
 def register():
     """
     Handles user registration.
-    Inserts a new user into the database if the username does not already exist.
+    
+    - Validates form data and checks if the username already exists.
+    - Inserts a new user into the database if the username is available.
+    - Redirects to the login page upon successful registration.
     """
     form = RegisterForm()
     if form.validate_on_submit():
@@ -163,7 +179,12 @@ def register():
 def transaction_log():
     """
     Logs a financial transaction for the logged-in user.
-    Stores the transaction data in Supabase and redirects to the home page.
+
+    - Displays and validates the transaction form.
+    - Extracts and formats transaction details.
+    - Stores the transaction in Supabase.
+    - Provides user feedback via flash messages.
+    - Redirects to home on success or login if not authenticated.
     """
     if "username" in session:
         form = TransactionForm()
@@ -205,7 +226,12 @@ def transaction_log():
 def smartspending():
     """
     Generates financial recommendations based on the user's transaction history.
-    Uses an AI model to analyze spending patterns and provide insights.
+
+    - Verifies if the user is authenticated via session.
+    - If authenticated, analyzes the user's transaction data using an AI model.
+    - Uses the `invoke_llm` function to generate financial insights or recommendations.
+    - Renders a template displaying the generated insights (`ten_points`).
+    - Redirects to the login page if the user is not authenticated.
     """
     if "username" in session:
         ten_points = invoke_llm(session['all_transactions'], session['llm'])
