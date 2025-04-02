@@ -199,6 +199,7 @@ def transaction_log():
             transactionSubtotal = float(form.transactionSubtotal.data)
             transactionItems = form.transactionItems.data
             transactionTaxes = float(form.transactionTaxes.data)
+            transactionTotal = float(form.transactionTotal.data)
             transactionCategory = form.transactionCategory.data
             transactionPayment = form.transactionPayment.data
 
@@ -208,6 +209,7 @@ def transaction_log():
                 "transactionSubtotal": transactionSubtotal,
                 "transactionItems": transactionItems,
                 "transactionTaxes": transactionTaxes,
+                "transactionTotal": transactionTotal,
                 "transactionCategory": transactionCategory,
                 "transactionPayment": transactionPayment
             }
@@ -234,7 +236,8 @@ def smartspending():
     - Redirects to the login page if the user is not authenticated.
     """
     if "username" in session:
-        ten_points = invoke_llm(session['all_transactions'], session['llm'])
+        llm = create_llm()
+        ten_points = invoke_llm(data=session['all_transactions'], llm=llm)
         return render_template("smartspending.html", ten_points=ten_points)
     else:
         return redirect(url_for("login"))

@@ -46,6 +46,11 @@
         </div>
 
         <div>
+            {{ form.transactionTotal.label }}
+            {{ form.transactionTotal(size=20) }}
+        </div>
+
+        <div>
             {{ form.transactionPayment.label }}
             {{ form.transactionPayment() }}
         </div>

@@ -26,9 +26,10 @@
         <thead>
             <tr>
                 <th>Date</th>
-                <th>Total</th>
                 <th>Items</th>
+                <th>Subtotal</th>
                 <th>Taxes</th>
+                <th>Total</th>
                 <th>Category</th>
                 <th>Payment</th>
             </tr>
@@ -37,9 +38,10 @@
             {% for transaction in all_transactions %}
             <tr>
                 <td>{{ transaction.transactionDate }}</td>
-                <td>{{ transaction.transactionSubtotal }}</td>
                 <td>{{ transaction.transactionItems }}</td>
+                <td>{{ transaction.transactionSubtotal }}</td>
                 <td>{{ transaction.transactionTaxes }}</td>
+                <td>{{ transaction.transactionTotal }}</td>
                 <td>{{ transaction.transactionCategory }}</td>
                 <td>{{ transaction.transactionPayment }}</td>
             </tr>
