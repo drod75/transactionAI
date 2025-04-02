@@ -1,30 +1,34 @@
-.points {
+.point {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 15px auto;
+    margin: 45px auto;
     padding: 15px;
-    border: 1px solid black;
-    border-radius: 25px;
-    font-size: 1.25em;
     width: 85%;
-    background-image: url('https://cdn.pixabay.com/photo/2022/01/28/14/58/mountains-6974850_1280.jpg');
-    background-position: bottom;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: rgba(130,132,180,255);
+    transition: transform .5s;
+    transition: color 0.5, background-color 0.5s;
 }
 
-.recomendation {
+.point:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(10px 10px 20px rgba(36, 36, 36, 0.5));
+}
+
+.recommendation {
     color: white;
     width: 85%;
 }
 
-.recomendation h3 {
-    text-align: center;
+.recommendation h3 {
+    text-align: left;
     margin-bottom: 25px;
     font-size: 2.5em;
+    color: rgba(255,206,209,255);
 }
 
-.recomendation p {
+.recommendation p {
+    text-align: left;
     margin-bottom: 25px;
+    font-size: 1em;
 }

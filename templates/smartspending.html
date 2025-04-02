@@ -8,8 +8,8 @@
 
 {% block content %}
     {% for key,value in ten_points.items() %}
-    <div class="points">
-        <div class="recomendation">
+    <div class="point">
+        <div class="recommendation">
             <h3>{{key.title().replace('_', ' ')}}</h3>
             <p>{{value}}</p>
         </div>
