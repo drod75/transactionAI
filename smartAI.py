@@ -52,7 +52,25 @@ def invoke_llm(data, llm):
         - transactionCategory: the category of the purchase
         - transactionPayment: the method of payment
         Make ten points of recommendations based on the data, each point should be a recommendation based on the data
-        and be around 5 sentences long, be as detailed as possible and refer to legitimate data for each point.
+        and be around a paragraph long, be as detailed as possible and refer to legitimate data for each point.
+        
+        When I refer to a paragraph I mean a block of seven sentences each containing a minimum of 15 words, you are required
+        to have at least one paragraph for each point.
+        
+        When I refer to a paragraph I mean a block of seven sentences each containing a minimum of 15 words, you are required
+        to have at least one paragraph for each point.
+        
+        When I refer to a paragraph I mean a block of seven sentences each containing a minimum of 15 words, you are required
+        to have at least one paragraph for each point.
+        
+        When I refer to a paragraph I mean a block of seven sentences each containing a minimum of 15 words, you are required
+        to have at least one paragraph for each point.
+        
+        When I refer to a paragraph I mean a block of seven sentences each containing a minimum of 15 words, you are required
+        to have at least one paragraph for each point.
+        
+        When I refer to a paragraph I mean a block of seven sentences each containing a minimum of 15 words, you are required
+        to have at least one paragraph for each point.
         
         ''',
         input_variables=["data"],

@@ -6,6 +6,8 @@ from supabase import create_client, Client
 from smartAI import create_llm, invoke_llm
 from forms import LoginForm, RegisterForm, TransactionForm
 from graphing import generate_graphs
+from extract_data import extract_data
+
 
 # Load environment variables first
 load_dotenv()
@@ -47,6 +49,8 @@ def home():
         all_transactions = response.data
 
         session['all_transactions'] = all_transactions
+        
+        df = extract_data(all_transactions)
 
         # Convert Supabase dict format to format expected by generate_graphs
         formatted_transactions = []
@@ -60,7 +64,7 @@ def home():
             "home.html",
             username=username,
             total_transactions=total_transactions,
-            all_transactions=all_transactions,
+            df=df,
             graphs=graph_html,
         )
 

@@ -20,7 +20,12 @@
 </div>
 
 <!-- display transactions -->
-{% if all_transactions %}
+{% if df.shape[0] == 0 %}
+<div class="warning">
+    <h3>Warning</h3>
+    <p>You have no transactions at the moment!</p>
+</div>
+{% else %}
 <div class="table-wrapper">
     <table class="transaction_table">
         <thead>
@@ -35,24 +40,19 @@
             </tr>
         </thead>
         <tbody>
-            {% for transaction in all_transactions %}
+            {% for index, row in df.iterrows() %}
             <tr>
-                <td>{{ transaction.transactionDate }}</td>
-                <td>{{ transaction.transactionItems }}</td>
-                <td>{{ transaction.transactionSubtotal }}</td>
-                <td>{{ transaction.transactionTaxes }}</td>
-                <td>{{ transaction.transactionTotal }}</td>
-                <td>{{ transaction.transactionCategory }}</td>
-                <td>{{ transaction.transactionPayment }}</td>
+                <td>{{ row['Datetime']}}</td>
+                <td>{{ row['Items'] }}</td>
+                <td>{{'%0.2f' | format(row['Subtotal']) }}</td>
+                <td>{{'%0.2f' | format(row['Taxes']) }}</td>
+                <td>{{'%0.2f' | format(row['Total']) }}</td>
+                <td>{{ row['Category'] }}</td>
+                <td>{{ row['Payment Method'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-</div>
-{% else %}
-<div class="warning">
-    <h3>Warning</h3>
-    <p>You have no transactions at the moment!</p>
 </div>
 {% endif %}
 
