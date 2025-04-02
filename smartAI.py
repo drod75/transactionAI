@@ -43,6 +43,7 @@ def invoke_llm(data, llm):
         {data}
         
         Pretend you are a financial advisor, and you have been given data with the following schema:
+        - transactionId: a unique identifier for the transaction, you can ignore
         - userId: a unique identifier for the user who made the transaction, you can ignore
         - transactionDate: the date of the transaction
         - transactionSubtotal: the subtotal of the transaction

@@ -47,6 +47,7 @@ class TransactionForm(FlaskForm):
     )
     transactionItems = IntegerField("Number of Items", validators=[DataRequired()])
     transactionTaxes = DecimalField("Taxes", validators=[DataRequired()])
+    transactionTotal = DecimalField("Transaction Total", validators=[DataRequired()])
     transactionPayment = SelectField(
         "Cash or Credit",
         [DataRequired()],
