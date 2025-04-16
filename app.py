@@ -35,34 +35,25 @@ def home():
         Rendered template for the home page if authenticated, otherwise a redirect to login.
     """
     if "username" in session:
-        userId = session["userId"]
-        username = session["username"]
 
-        # Show total transactions made up to date for this user
         response = supabase.table("transactions").select(
-            "*", count="exact").eq("userId", userId).execute()
+            "*", count="exact").eq("userId", session["userId"]).execute()
         total_transactions = response.count
 
-        # Show all transactions
-        response = supabase.table("transactions").select(
-            "*").eq("userId", userId).execute()
-        all_transactions = response.data
+        if "all_transactions" not in session:
+            response = supabase.table("transactions").select(
+                "*").eq("userId", session["userId"]).execute()
+            all_transactions = response.data
 
-        session['all_transactions'] = all_transactions
+            session['all_transactions'] = all_transactions
         
-        df = extract_data(all_transactions)
+        df = extract_data(session['all_transactions'])
 
-        # Convert Supabase dict format to format expected by generate_graphs
-        formatted_transactions = []
-        for transaction in all_transactions:
-            # Adapt this based on your graphing.py implementation
-            formatted_transactions.append(transaction)
-
-        graph_html = generate_graphs(formatted_transactions)
+        graph_html = generate_graphs(session['all_transactions'])
 
         return render_template(
             "home.html",
-            username=username,
+            username=session["username"],
             total_transactions=total_transactions,
             df=df,
             graphs=graph_html,
@@ -128,10 +119,6 @@ def login():
             user = response.data[0]
             session["userId"] = user["userId"]
             session["username"] = user["username"]
-            
-            # llm 
-            llm = create_llm()
-            session['llm'] = llm
             
             return redirect(url_for("home"))
         else:
@@ -220,6 +207,13 @@ def transaction_log():
 
             response = supabase.table("transactions").insert(
                 new_transaction).execute()
+            
+            response = supabase.table("transactions").select(
+                "*").eq("userId", session["userId"]).execute()
+            
+            all_transactions = response.data
+
+            session['all_transactions'] = all_transactions
 
             flash("Transaction logged successfully!", "success")
             return redirect(url_for("home"))

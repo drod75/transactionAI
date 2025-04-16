@@ -14,8 +14,8 @@
 }
 
 .transaction_table {
-  border-radius: 5px;
-  font-size: 12px;
+  margin: 45px 0px;
+  font-size: 20px;
   font-weight: normal;
   border: none;
   border-collapse: collapse;
@@ -117,7 +117,7 @@
 }
 
 .graph-container {
-  width: 75%;
+  width: 90%;
   margin: 0 auto;
   align-items: center;
   display: flex;
