@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 def create_llm():
     load_dotenv()
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-pro",
+        model="gemini-2.0-flash",
         temperature=0.5,
         max_retries=2,
         api_key=os.getenv("GOOGLE_API_KEY"),

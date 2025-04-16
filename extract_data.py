@@ -30,5 +30,10 @@ def extract_data(all_transactions) -> pd.DataFrame:
     df['Weekday'] = df['Date'].dt.day_name()
     weekday_order = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     df['Weekday'] = pd.Categorical(df['Weekday'], categories=weekday_order, ordered=True)
+     
+    # sort by date
+    
+    df = df.sort_values(by=['Date'], ignore_index=True)
+    df.reset_index(drop=True, inplace=True)
         
     return df
