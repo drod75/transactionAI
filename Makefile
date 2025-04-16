@@ -1,26 +1,10 @@
-# Makefile for running the Flask app
+# Makefile for Flask App (Windows)
 
-# Variables
-APP_NAME=app.py
 VENV_DIR=venv
-PYTHON=$(VENV_DIR)/bin/python
-PIP=$(VENV_DIR)/bin/pip
 
-# For Windows
-PYTHON=$(VENV_DIR)\Scripts\python.exe
-PIP=$(VENV_DIR)\Scripts\pip.exe
+run: $(VENV_DIR)\Scripts\activate
+	$(VENV_DIR)\Scripts\python.exe -m flask run
 
-.PHONY: run setup install clean
-
-setup:
+$(VENV_DIR)\Scripts\activate:
 	python -m venv $(VENV_DIR)
-	$(PIP) install -r requirements.txt
-
-install:
-	$(PIP) install -r requirements.txt
-
-run:
-	FLASK_APP=$(APP_NAME) FLASK_ENV=development $(PYTHON) -m flask run
-
-clean:
-	rm -rf __pycache__ $(VENV_DIR)
+	$(VENV_DIR)\Scripts\pip.exe install -r requirements.txt
