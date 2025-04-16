@@ -1,17 +1,19 @@
-import os
-from dotenv import load_dotenv
-from flask import Flask, flash, redirect, render_template, session, url_for
-import markdown
-from supabase import create_client, Client
-from smartAI import create_llm, invoke_llm
-from forms import LoginForm, RegisterForm, TransactionForm
-from graphing import generate_graphs
-from extract_data import extract_data
+import os # To access environment variables
+from dotenv import load_dotenv # To load variables from a .env file into environment
+from flask import Flask, flash, redirect, render_template, session, url_for # To load variables from a .env file into environment
+import markdown # To convert markdown (like README.md) to HTML
+from supabase import create_client, Client # For interacting with the Supabase database
+from smartAI import create_llm, invoke_llm # Custom AI model integration
+from forms import LoginForm, RegisterForm, TransactionForm # WTForms (user input forms)
+from graphing import generate_graphs # Custom graph generation function
+from extract_data import extract_data # Parses/cleans transaction data
 
 
 # Load environment variables first
 load_dotenv()
 
+
+# Creates a Flask web app, Sets a secret key for session handling
 app = Flask(__name__)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.secret_key = os.getenv("SECRET_KEY")
@@ -21,6 +23,7 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# User Dashboard
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
 def home():
@@ -35,25 +38,34 @@ def home():
         Rendered template for the home page if authenticated, otherwise a redirect to login.
     """
     if "username" in session:
+        userId = session["userId"]
+        username = session["username"]
 
+        # Show total transactions made up to date for this user
         response = supabase.table("transactions").select(
-            "*", count="exact").eq("userId", session["userId"]).execute()
+            "*", count="exact").eq("userId", userId).execute()
         total_transactions = response.count
 
-        if "all_transactions" not in session:
-            response = supabase.table("transactions").select(
-                "*").eq("userId", session["userId"]).execute()
-            all_transactions = response.data
+        # Show all transactions
+        response = supabase.table("transactions").select(
+            "*").eq("userId", userId).execute()
+        all_transactions = response.data
 
-            session['all_transactions'] = all_transactions
+        session['all_transactions'] = all_transactions
         
-        df = extract_data(session['all_transactions'])
+        df = extract_data(all_transactions)
 
-        graph_html = generate_graphs(session['all_transactions'])
+        # Convert Supabase dict format to format expected by generate_graphs
+        formatted_transactions = []
+        for transaction in all_transactions:
+            # Adapt this based on your graphing.py implementation
+            formatted_transactions.append(transaction)
+
+        graph_html = generate_graphs(formatted_transactions)
 
         return render_template(
             "home.html",
-            username=session["username"],
+            username=username,
             total_transactions=total_transactions,
             df=df,
             graphs=graph_html,
@@ -61,7 +73,7 @@ def home():
 
     return redirect(url_for("login"))
 
-
+# Converts and Renders Markdown
 @app.route("/about")
 def about():
     """
@@ -84,7 +96,7 @@ def about():
     else:
         return redirect(url_for("login"))
 
-
+# Ends User Session
 @app.route("/logout")
 def logout():
     """
@@ -95,7 +107,7 @@ def logout():
     session.pop('all_transactions', None)
     return redirect(url_for("login"))
 
-
+# User Authentication
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """
@@ -120,13 +132,17 @@ def login():
             session["userId"] = user["userId"]
             session["username"] = user["username"]
             
+            # llm 
+            llm = create_llm()
+            session['llm'] = llm
+            
             return redirect(url_for("home"))
         else:
             flash("Invalid username or password. Please try again.", "error")
 
     return render_template("login.html", form=form)
 
-
+# User Sign-up
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """
@@ -165,7 +181,7 @@ def register():
 
     return render_template("register.html", form=form)
 
-
+# Add Financial Entry
 @app.route("/transaction_log", methods=["GET", "POST"])
 def transaction_log():
     """
@@ -207,13 +223,6 @@ def transaction_log():
 
             response = supabase.table("transactions").insert(
                 new_transaction).execute()
-            
-            response = supabase.table("transactions").select(
-                "*").eq("userId", session["userId"]).execute()
-            
-            all_transactions = response.data
-
-            session['all_transactions'] = all_transactions
 
             flash("Transaction logged successfully!", "success")
             return redirect(url_for("home"))
@@ -221,7 +230,7 @@ def transaction_log():
     else:
         return redirect(url_for("login"))
 
-
+# AI Spending Advice
 @app.route('/smartspending', methods=['GET', 'POST'])
 def smartspending():
     """
@@ -240,6 +249,6 @@ def smartspending():
     else:
         return redirect(url_for("login"))
 
-
+# Runs app in debug mode when ran directly (python app.py)
 if __name__ == "__main__":
     app.run(debug=True)
