@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, flash, redirect, render_template, session, url_for, g
+from flask import Flask, flash, redirect, render_template, session, url_for
 import markdown
 from supabase import create_client, Client
 from smartAI import create_llm, invoke_llm
@@ -24,6 +24,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Global LLM instance for reuse
 llm = None
+ten_points = None
 
 # Authentication decorator
 def login_required(f):
@@ -43,12 +44,13 @@ def hash_password(password):
 def before_request():
     """Initialize global LLM instance when needed"""
     global llm
-    g.supabase = supabase
+    global supabase
+    global ten_points
 
 @app.route("/")
 @app.route("/home")
 @login_required
-def home()::
+def home():
     """
     Renders the home page for logged-in users.
     
@@ -121,6 +123,8 @@ def login():
         return redirect(url_for("home"))
         
     form = LoginForm()
+    global supabase
+    
     if form.validate_on_submit():
         username = form.username.data
         password = hash_password(form.password.data)
@@ -215,6 +219,7 @@ def transaction_log():
         }
 
         # Save transaction
+        global supabase
         supabase.table("transactions").insert(new_transaction).execute()
         
         # Update transactions in session
@@ -240,10 +245,12 @@ def smartspending():
     - Redirects to the login page if the user is not authenticated.
     """
     global llm
+    global ten_points
     if llm is None:
         llm = create_llm()
-    
-    ten_points = invoke_llm(data=session['all_transactions'], llm=llm)
+    if ten_points is None:
+        ten_points = invoke_llm(data=session['all_transactions'], llm=llm)
+        
     return render_template("smartspending.html", ten_points=ten_points)
 
 # Error handlers
