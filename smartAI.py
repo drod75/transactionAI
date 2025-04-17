@@ -91,4 +91,5 @@ def invoke_llm(data: List[Dict[str, Any]], llm: ChatGoogleGenerativeAI) -> Dict[
     )
     
     chain = prompt | llm | parser
-    return chain.invoke({"data": data})
+    response = chain.invoke({"data": data})
+    return response
