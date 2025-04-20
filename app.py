@@ -252,5 +252,3 @@ def smartspending():
         ten_points = invoke_llm(data=session['all_transactions'], llm=llm)
         
     return render_template("smartspending.html", ten_points=ten_points)
-
-    app.debug = True
