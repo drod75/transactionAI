@@ -18,7 +18,7 @@ tool that is simple and easy to use and can help them make better financial deci
 
 Our team consists of:
 
-- David Rodriguez, [Portfolio](https://drod75.github.io/)
+- David Rodriguez
 - Lin Zheng
 - Kedar Chinnery
 - Celso Gonzalez
@@ -28,7 +28,7 @@ Our team consists of:
 
 ## What will we use?
 
-![stack-image]('static/images/diagram.png')
+![diagram](static/images/diagram.png)
 
 <br><br>
 
