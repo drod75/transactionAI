@@ -253,5 +253,4 @@ def smartspending():
         
     return render_template("smartspending.html", ten_points=ten_points)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    app.debug = True
